@@ -5,6 +5,7 @@ Containing zipped examples of projects you can use to play around with [*refiner
 Each project is in a dedicated branch and follows the following pattern:
 - `README.md`: short description of the project and the raw data
 - `snapshot_data.json.zip`: project export of the use case which you can import as a snapshot to your local *refinery*.
+- some branches additionally contain information about e.g. how you can scrape the initial data or how to export the final data to be used for a different framework.
 
 Currently, we have the following use cases:
 - [Conversational AI](https://github.com/code-kern-ai/sample-projects/tree/conversational-ai): `git clone -b conversational-ai https://github.com/code-kern-ai/sample-projects.git`
