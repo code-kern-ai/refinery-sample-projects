@@ -1,7 +1,9 @@
-![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cdbe6640dc8cc0c07ae392_Thumbnail%20sample-projects.png)
+# 💬 Conversational AI
+In this use case, we show you how to create training data for a [Rasa chatbot](https://github.com/RasaHQ/rasa) using [Kern *refinery*](https://github.com/code-kern-ai/refinery). You can either import the `snapshot_data.json` as a snapshot in the application, or start from scratch with the `raw_data.json`.
 
-In this use case, we show you how to create data for a [Rasa chatbot](https://github.com/RasaHQ/rasa). You can either import the `snapshot_data.json` as a snapshot in the application, or start from scratch with the `raw_data.json`.
+<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/6200e881452a41a0d24789f3_Group%20132.svg">
 
+## Labels
 The goal is to create a chatbot that is capable of understanding multiple intents from questions asked by users about financial topics, e.g. frozen bank accounts. The labels of our main labeling task `intent` are:
 - 401k
 - account blocked
@@ -19,6 +21,7 @@ Additionally, we aim to identify card providers, which is given in a second labe
 
 As we have english texts, we can embed our data using the `distilbert-base-uncased` transformer model directly from [🤗 Hugging Face](https://huggingface.co/distilbert-base-uncased). For our `entities` labeling task, we've chosen the `en_core_web_sm` tokenizer.
 
+## `intent` heuristics
 The heuristics we build for the `intent` task are mostly consisting of distant supervisor heuristics, i.e. looking for key terms in a sentence from a lookup list. One example is `lkp_spending_history`:
 
 ```python
@@ -59,6 +62,7 @@ class DistilbertLR(LearningClassifier):
         return self.model.predict_proba(embeddings)
 ```
 
+## `entities` heuristic
 For our `entities` task, we write a regex expression:
 
 ```python
@@ -93,8 +97,11 @@ def find_card_providers(record):
 
 Functions like this are available in our [template functions](https://github.com/code-kern-ai/template-functions) repository. Also, if you need help writing more complex functions, don't hesitate to contact us in the [forum](https://discuss.kern.ai/) or [Discord channel](https://discord.com/invite/qf4rGCEphW).
 
-We can weakly supervise the results as we've labeled some manual reference data, and doing so create denoised and automated labels for our tasks. That is already cool, but we still need to convert the project data into the [Rasa format](https://rasa.com/docs/rasa/nlu-training-data/). This is where we can use the `rasa` adapter from our [Python SDK](https://github.com/code-kern-ai/kern-python):
+## Weak supervision
+We can weakly supervise the results as we've labeled some manual reference data helping us to evaluate the heuristics, and doing so create denoised and automated labels for our tasks. That is already cool, but we still need to convert the project data into the [Rasa format](https://rasa.com/docs/rasa/nlu-training-data/). This is where we can use the `rasa` adapter from our [Python SDK](https://github.com/code-kern-ai/kern-python):
 
+
+## Exporting to Rasa format
 ```python
 from kern import Client
 
@@ -133,4 +140,4 @@ nlu:
     - credit card account
 ```
 
-And that's it! You can now easily build chatbot data (from simple text messages up to complex messages) via Kern refinery, and immediately export it to the desired Rasa format with only few lines of code.
+And that's it! You can now easily build chatbot data (from simple text messages up to complex messages) via Kern *refinery*, and immediately export it to the desired Rasa format with only few lines of code.
