@@ -1,14 +1,3 @@
-![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cdbe6640dc8cc0c07ae392_Thumbnail%20sample-projects.png)
+# 🧮 Finetuning similarity search
 
-Containing zipped examples of projects you can use to play around with [*refinery*](https://github.com/code-kern-ai/refinery).
-
-Each project is in a dedicated branch and follows the following pattern:
-- `README.md`: short description of the project and the raw data
-- `snapshot_data.json.zip`: project export of the use case which you can import as a snapshot to your local *refinery*.
-
-Currently, we have the following use cases:
-- [Conversational AI]()
-- [Sentiment prediction stock news]()
-- [Finetuning similarity search]()
-
-If you want to provide your own project as a sample project in this repository, please reach out to us.
+<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41cb827b6527908b65a8_industry_saas.svg">
