@@ -7,8 +7,10 @@ Each project is in a dedicated branch and follows the following pattern:
 - `snapshot_data.json.zip`: project export of the use case which you can import as a snapshot to your local *refinery*.
 
 Currently, we have the following use cases:
-- [Conversational AI](https://github.com/code-kern-ai/sample-projects/tree/conversational-ai)
-- [Sentiment prediction stock news](https://github.com/code-kern-ai/sample-projects/tree/sentiment-analysis-stock-news)
-- [Finetuning similarity search](https://github.com/code-kern-ai/sample-projects/tree/finetuning-similarity-search)
+- [Conversational AI](https://github.com/code-kern-ai/sample-projects/tree/conversational-ai): `git clone -b conversational-ai https://github.com/code-kern-ai/sample-projects.git`
+- [Sentiment prediction stock news](https://github.com/code-kern-ai/sample-projects/tree/sentiment-analysis-stock-news): `git clone -b sentiment-analysis-stock-news https://github.com/code-kern-ai/sample-projects.git`
+- [Finetuning similarity search](https://github.com/code-kern-ai/sample-projects/tree/finetuning-similarity-search): `git clone -b finetuning-similarity-search https://github.com/code-kern-ai/sample-projects.git`
+
+You can either clone the whole repository, or one specific branch (recommended).
 
 If you want to provide your own project as a sample project in this repository, please reach out to us.
