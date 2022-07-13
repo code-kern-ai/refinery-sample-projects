@@ -1,8 +1,8 @@
 # 🙂😡 Sentiment analysis
 
-In this use case we show you how you can build your own sentiment anlysis classifiert for stock news - completely from stratch! You'll scrape some interesting stock news from the internet to create your own dataset and then use Kern Refinery to easily and quickly label the data. 
+In this use-case we show you how you can build your own sentiment analysis classifier for stock news - completely from stratch! You'll scrape some interesting stock news from the internet to create your own dataset and then use Kern Refinery to easily and quickly label the data. 
 
-To create the embeddings from our text, we are going to use the `zhayunduo/roberta-base-stocktwits-finetuned` model from [Huggingface](huggingface.co).
+To create the embeddings from our text data, we are going to use the `zhayunduo/roberta-base-stocktwits-finetuned` model from [Huggingface](huggingface.co).
 
 Watch the corresponding tutorial [here on YouTube](https://www.youtube.com/watch?v=0XZLQlYSQEQ)!
 
@@ -10,7 +10,7 @@ Watch the corresponding tutorial [here on YouTube](https://www.youtube.com/watch
 
 ## Labels
 
-The goal of the sentiment classifier is to predict if the headline for a stock news is `positive`, `neutral` or `negative`. 
+The goal of the sentiment classifier is to predict if the headline for a stock news headline is `positive`, `neutral` or `negative`. 
 
 ## Heuristics
 
@@ -62,3 +62,4 @@ class MyActiveLearner(LearningClassifier):
         return self.model.predict_proba(embeddings)
 
 ```
+
