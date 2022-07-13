@@ -15,7 +15,7 @@ To create the embeddings from our text, we are going to use the 'zhayunduo/rober
 ## Heuristics
 
 Labeling function #1:
-'''
+```
 import re
 
 def contains_percent(record):
@@ -27,18 +27,18 @@ def contains_percent(record):
     elif percentage_down:
         return 'Negative'
 
-'''
+```
 See [here](https://regex101.com/r/P2gzUl/1) for an explaination of the REGEX function. 
 
 Labeling function #2:
-'''
+```
 def contains_buffet(record):
     if 'warren buffet' in record['Headline'].text.lower():
         return 'Neutral'
-'''
+```
 
 Active learner:
-'''
+```
 from sklearn.linear_model import LogisticRegression
 # you can find further models here: https://scikit-learn.org/stable/supervised_learning.html#supervised-learning
 
@@ -61,4 +61,4 @@ class MyActiveLearner(LearningClassifier):
     def predict_proba(self, embeddings):
         return self.model.predict_proba(embeddings)
 
-'''
+```
