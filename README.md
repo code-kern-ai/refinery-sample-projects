@@ -113,7 +113,7 @@ client = Client(user_name, password, project_id)
 # if you run the application locally, please use the following instead:
 # client = Client(username, password, project_id, uri="http://localhost:4455")
 
-from kern.adapter import rasa
+from refinery.adapter import rasa
 
 rasa.build_intent_yaml(
   client,
