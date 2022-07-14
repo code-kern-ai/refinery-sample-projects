@@ -71,7 +71,7 @@ The labeling workflow is rarely linear and more often an iterative process of la
 In this example, we first labeled around 250 records to get a feeling for the data and build up the lookup lists. After that, we added the heuristics, namely the lookup functions and the active learner. We then validated the heuristics in the data browser by inspecting conflicts and removing confusing keywords from the respective lookup lists. Once we were relatively satisfied with the results, we ran the weak supervision and looked at the confusion matrix.
 
 <p align="center">
-    <img width="600" src="figures/confusion_matrix_project_overview.PNG">
+    <img src="figures/confusion_matrix_project_overview.PNG">
 </p>
 
 For this end-to-end use case, we are satisfied with the accuracy and can advance to the next step towards our fine-tuned similarity search.
