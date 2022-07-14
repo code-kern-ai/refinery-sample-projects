@@ -60,16 +60,24 @@ class DistilbertClassifier(LearningClassifier):
 
 Here we use the `Description-classification-distilbert-base-uncased` because we suspect the description to hold more valueable information than the title. The cleanest way would probably be to use the embedding of a proxy attribute where title and description are concatenated, but for the sake of simplicity we are keeping it at the description only. 
 
+We end up with the following heuristics:
+<p align="center">
+    <img src="figures/heuristics.PNG">
+</p>
+
 # Labeling workflow and weak supervision
 The labeling workflow is rarely linear and more often an iterative process of labeling, writing heuristics, validating heuristics, re-labeling, applying weak supervision, validating the results and much more.
 
 In this example, we first labeled around 250 records to get a feeling for the data and build up the lookup lists. After that we added the heuristics, namely the lookup functions and the active learner. We then validated the heuristics in the data browser by inspecting conflicts and removing confusing keywords from the respective lookup lists. Once we were relatively satisfied with the results, we ran the weak supervision and looked at the confusion matrix.
 
-<add image here>
+<p align="center">
+    <img width="600" src="figures/confusion_matrix_project_overview.PNG">
+</p>
 
 For this end-to-end use case, we are satisfied with the accuracy and can advance to the next step towards our fine-tuned similarity search.
 
 # Data Export and Quaterion format
+## Export
 We could use the in-app functionality of exporting our data, but we wouldn't be developers if we weren't commited to eliminating every second of manual labour. That is why we will export it using the [refinery SDK](https://github.com/code-kern-ai/refinery-python), which can be easily installed with pip.
 ```
 $ pip install python-refinery
@@ -90,7 +98,34 @@ client = Client(user_name, password, project_id, uri="https://app.kern.ai/")
 df = client.get_record_export(tokenize=False)
 ```
 
-Before we continue with Quaterion, we must install it using pip:
+Before we continue with Quaterion, we must have to select the data that is labeled to our specifications, namely either have a manual label or weakly supervised label with a confidence above 0.7:
+```python 
+filtered_df = df[
+    (df["__Topic__WEAK_SUPERVISION__confidence"].astype(float) > 0.7) # threshold check
+    & ~(df["__Topic__WEAK_SUPERVISION"].isnull() & df["__Topic__MANUAL"].isnull()) # either manually or weakly labeled
+    ].reset_index()
+```
+
+Now we add a new column that is either the manual label or, if there is none, the weakly supervised label:
+```python 
+def combine_labels(row):
+    if(row["__Topic__MANUAL"] is not None):
+        return row["__Topic__MANUAL"]
+    else:
+        return row["__Topic__WEAK_SUPERVISION"]
+
+filtered_df["label"] = filtered_df.apply(combine_labels, axis=1)
+```
+
+Now we just split this into a train and validation set and save them as a json for Quaterion later.
+```python
+filtered_df_val = filtered_df[["Title", "Description", "label"]].iloc[-2500:]
+filtered_df_train = filtered_df[["Title", "Description", "label"]].iloc[:-2500]
+
+filtered_df_val[["Title", "Description", "label"]].to_json("labeled_data_val.json", orient="records")
+filtered_df_train[["Title", "Description", "label"]].to_json("labeled_data_train.json", orient="records")
+```
+## Quaterion
 ```
 $ pip install quaterion
 ```
@@ -98,4 +133,37 @@ $ pip install quaterion
 For fine-tuning similarity with classification data, we will use `SimilarityGroupSample` objects (see [quaterion quick start](https://quaterion.qdrant.tech/getting_started/quick_start.html#similarity-groups)).
 
 ```python
+from quaterion.dataset.similarity_data_loader import (
+    GroupSimilarityDataLoader,
+    SimilarityGroupSample,
+)
+
+class JsonDataset(Dataset):
+    def __init__(self, path: str):
+        super().__init__()
+        with open(path, "r") as f:
+            self.data = [json.loads(line) for line in f.readlines()]
+
+    def __getitem__(self, index: int) -> SimilarityGroupSample:
+        item = self.data[index]
+        return SimilarityGroupSample(obj=item, group=hash(item["label"]))
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+train_dataloader = GroupSimilarityDataLoader(JsonDataset('./labeled_data_train.json'), batch_size=128)
+val_dataloader = GroupSimilarityDataLoader(JsonDataset('./labeled_data_val.json'), batch_size=128)
 ```
+
+The data is now prepared to be processed in a Quaterion fine-tuning pipeline!
+
+# Notes
+## Weak supervision threshold
+The exported data contains not only the label that was assigned by weak supervision but also the confidence attached to it. Selecting the right threshold (when to take the weak supervision label as the real label) is always difficult and a trade-off between accuracy and amount of labeled data.
+
+After inspecting several threshold levels, we settled with 0.7:
+<p align="center">
+    <img src="figures/ws_threshold.PNG">
+</p>
+
+If you're wondering how these plots were generated, head over to the [pretty-print-confusion-matrix GitHub repo](https://github.com/wcipriano/pretty-print-confusion-matrix)!
