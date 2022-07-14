@@ -4,7 +4,7 @@ In this use case, we show you how to fine-tune embeddings on your own data for b
 <img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41cb827b6527908b65a8_industry_saas.svg">
 
 # Data
-We use a publicly available dataset for demonstration purposes, namely the [AG News Classification Dataset from Kaggle](https://www.kaggle.com/datasets/amananandrai/ag-news-classification-dataset). The data is already labeled, which is not a problem for this sample project as it can help us assess the quality of our labeling (or we could find labeling mistakes in the original data 😉).
+We use a publicly available dataset for demonstration purposes, namely the [AG News Classification Dataset from Kaggle](https://www.kaggle.com/datasets/amananandrai/ag-news-classification-dataset). The data is already labeled, which is not a problem for this sample project as it can help us assess the quality of our labeling (or we could find labeling mistakes in the original data 😉). We also limit ourselves to 20.000 records for faster processing.
 # Project settings
 We have English text, so we use the English tokenizer `en_core_web_sm`. For the generation of embeddings we just use `distilbert-base-uncased` from [🤗 Hugging Face](https://huggingface.co/distilbert-base-uncased).
 
