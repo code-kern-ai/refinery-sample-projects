@@ -58,7 +58,7 @@ class DistilbertClassifier(LearningClassifier):
         return self.model.predict_proba(embeddings)
 ```
 
-Here we use the `Description-classification-distilbert-base-uncased` because we suspect the description to hold more valueable information than the title. The cleanest way would probably be to use the embedding of a proxy attribute where title and description are concatenated, but for the sake of simplicity we are keeping it at the description only. 
+Here we use the `Description-classification-distilbert-base-uncased` because we suspect the description to hold more valuable information than the title. The cleanest way would probably be to use the embedding of a proxy attribute where title and description are concatenated, but for the sake of simplicity, we are keeping it at the description only. 
 
 We end up with the following heuristics:
 <p align="center">
@@ -66,9 +66,9 @@ We end up with the following heuristics:
 </p>
 
 # Labeling workflow and weak supervision
-The labeling workflow is rarely linear and more often an iterative process of labeling, writing heuristics, validating heuristics, re-labeling, applying weak supervision, validating the results and much more.
+The labeling workflow is rarely linear and more often an iterative process of labeling, writing heuristics, validating heuristics, re-labeling, applying weak supervision, validating the results, and much more.
 
-In this example, we first labeled around 250 records to get a feeling for the data and build up the lookup lists. After that we added the heuristics, namely the lookup functions and the active learner. We then validated the heuristics in the data browser by inspecting conflicts and removing confusing keywords from the respective lookup lists. Once we were relatively satisfied with the results, we ran the weak supervision and looked at the confusion matrix.
+In this example, we first labeled around 250 records to get a feeling for the data and build up the lookup lists. After that, we added the heuristics, namely the lookup functions and the active learner. We then validated the heuristics in the data browser by inspecting conflicts and removing confusing keywords from the respective lookup lists. Once we were relatively satisfied with the results, we ran the weak supervision and looked at the confusion matrix.
 
 <p align="center">
     <img width="600" src="figures/confusion_matrix_project_overview.PNG">
@@ -78,12 +78,12 @@ For this end-to-end use case, we are satisfied with the accuracy and can advance
 
 # Data Export and Quaterion format
 ## Export
-We could use the in-app functionality of exporting our data, but we wouldn't be developers if we weren't commited to eliminating every second of manual labour. That is why we will export it using the [refinery SDK](https://github.com/code-kern-ai/refinery-python), which can be easily installed with pip.
+We could use the in-app functionality of exporting our data, but we wouldn't be developers if we weren't committed to eliminating every second of manual labor. That is why we will export it using the [refinery SDK](https://github.com/code-kern-ai/refinery-python), which can be easily installed with pip.
 ```
 $ pip install python-refinery
 ```
 
-After that we can simply fetch our data using the following code:
+After that, we can simply fetch our data using the following code:
 ```python
 from refinery import Client
 
@@ -106,7 +106,7 @@ filtered_df = df[
     ].reset_index()
 ```
 
-Now we add a new column that is either the manual label or, if there is none, the weakly supervised label:
+Now, we add a new column that is either the manual label or, if there is none, the weakly supervised label:
 ```python 
 def combine_labels(row):
     if(row["__Topic__MANUAL"] is not None):
@@ -117,7 +117,7 @@ def combine_labels(row):
 filtered_df["label"] = filtered_df.apply(combine_labels, axis=1)
 ```
 
-Now we just split this into a train and validation set and save them as a json for Quaterion later.
+To finish the pre-processing, we just split this into a train and validation set and save them as a json for Quaterion later.
 ```python
 filtered_df_val = filtered_df[["Title", "Description", "label"]].iloc[-2500:]
 filtered_df_train = filtered_df[["Title", "Description", "label"]].iloc[:-2500]
@@ -163,7 +163,7 @@ The exported data contains not only the label that was assigned by weak supervis
 
 After inspecting several threshold levels, we settled with 0.7:
 <p align="center">
-    <img src="figures/ws_threshold.PNG">
+    <img src="figures/ws_threshold.png">
 </p>
 
 If you're wondering how these plots were generated, head over to the [pretty-print-confusion-matrix GitHub repo](https://github.com/wcipriano/pretty-print-confusion-matrix)!
