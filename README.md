@@ -104,7 +104,7 @@ def find_card_providers(record):
 Functions like this are available in our [template functions](https://github.com/code-kern-ai/template-functions) repository. Also, if you need help writing more complex functions, don't hesitate to contact us in the [forum](https://discuss.kern.ai/) or [Discord channel](https://discord.com/invite/qf4rGCEphW).
 
 ## Weak supervision and SDK
-We can weakly supervise the results as we've labeled some manual reference data helping us to evaluate the heuristics, and doing so create denoised and automated labels for our tasks. That is already cool, but we still need to convert the project data into the [Rasa format](https://rasa.com/docs/rasa/nlu-training-data/). This is where we can use the `rasa` adapter from our [Python SDK](https://github.com/code-kern-ai/refinery-python). First, install the SDK via `pip install python-refinery`, and then follow along with the next section.
+We can weakly supervise the results as we've labeled some manual reference data helping us to evaluate the heuristics, and doing so create denoised and automated labels for our tasks. That is already cool, but we still need to convert the project data into the [Rasa format](https://rasa.com/docs/rasa/nlu-training-data/). This is where we can use the `rasa` adapter from our [Python SDK](https://github.com/code-kern-ai/refinery-python). First, install the SDK via `pip install python-refinery-sdk`, and then follow along with the next section.
 
 
 ## Exporting to Rasa format
