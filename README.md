@@ -161,6 +161,9 @@ val_dataloader = GroupSimilarityDataLoader(JsonDataset('./labeled_data_val.json'
 
 The data is now prepared to be processed in a Quaterion fine-tuning pipeline!
 
+If you like what we're working on, please leave a ⭐ for [refinery](https://github.com/code-kern-ai/refinery)!
+
+
 ## Notes
 ### Weak supervision threshold
 The exported data contains not only the label that was assigned by weak supervision but also the confidence attached to it. Selecting the right threshold (when to take the weak supervision label as the real label) is always difficult and a trade-off between accuracy and amount of labeled data.
