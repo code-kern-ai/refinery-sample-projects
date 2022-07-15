@@ -1,4 +1,4 @@
-![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cdbe6640dc8cc0c07ae392_Thumbnail%20sample-projects.png)
+![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)
 
 Containing examples of projects you can use to play around with [*refinery*](https://github.com/code-kern-ai/refinery).
 
