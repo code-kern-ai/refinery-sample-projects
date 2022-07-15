@@ -10,7 +10,7 @@ To create the embeddings from our text data, we are going to use the `zhayunduo/
 
 Watch the corresponding tutorial [here on YouTube](https://www.youtube.com/watch?v=0XZLQlYSQEQ)!
 
-<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41d833c650bbe9c7122f_sentiment-analysis.svg" width="400px">
+<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41d833c650bbe9c7122f_sentiment-analysis.svg" width="300px">
 
 ## Labels
 
