@@ -1,4 +1,4 @@
-![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)
+[![refinery repository](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)](https://github.com/code-kern-ai/refinery-sample-projects)
 
 # 💬 Conversational AI
 In this use case, we show you how to create training data for a [Rasa chatbot](https://github.com/RasaHQ/rasa) using [Kern *refinery*](https://github.com/code-kern-ai/refinery). You can either import the `snapshot_data.json.zip` as a snapshot in the application, or start from scratch with the `raw_data.json`.
