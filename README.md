@@ -1,5 +1,7 @@
+![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)
+
 # 💬 Conversational AI
-In this use case, we show you how to create training data for a [Rasa chatbot](https://github.com/RasaHQ/rasa) using [Kern *refinery*](https://github.com/code-kern-ai/refinery). You can either import the `snapshot_data.json` as a snapshot in the application, or start from scratch with the `raw_data.json`.
+In this use case, we show you how to create training data for a [Rasa chatbot](https://github.com/RasaHQ/rasa) using [Kern *refinery*](https://github.com/code-kern-ai/refinery). You can either import the `snapshot_data.json.zip` as a snapshot in the application, or start from scratch with the `raw_data.json`.
 
 <img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/6200e881452a41a0d24789f3_Group%20132.svg">
 
@@ -141,3 +143,5 @@ nlu:
 ```
 
 And that's it! You can now easily build chatbot data (from simple text messages up to complex messages) via Kern *refinery*, and immediately export it to the desired Rasa format with only few lines of code.
+
+If you like what we're working on, please leave a ⭐ for [refinery](https://github.com/code-kern-ai/refinery)!
