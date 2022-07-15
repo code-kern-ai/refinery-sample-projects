@@ -5,7 +5,9 @@
 # 💬 Conversational AI
 In this use case, we show you how to create training data for a [Rasa chatbot](https://github.com/RasaHQ/rasa) using [Kern *refinery*](https://github.com/code-kern-ai/refinery). You can either import the `snapshot_data.json.zip` as a snapshot in the application, or start from scratch with the `raw_data.json`.
 
+<img src="screenshot import snapshot.png" width=500px>
 
+*You can import the `snapshot.json.zip` on the start screen of the application (`http://localhost:4455`)*
 
 ## Labels
 The goal is to create a chatbot that is capable of understanding multiple intents from questions asked by users about financial topics, e.g. frozen bank accounts. The labels of our main labeling task `intent` are:
