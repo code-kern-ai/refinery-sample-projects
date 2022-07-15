@@ -1,9 +1,11 @@
 ![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)
 
+<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/6200e881452a41a0d24789f3_Group%20132.svg" width="300px">
+
 # 💬 Conversational AI
 In this use case, we show you how to create training data for a [Rasa chatbot](https://github.com/RasaHQ/rasa) using [Kern *refinery*](https://github.com/code-kern-ai/refinery). You can either import the `snapshot_data.json.zip` as a snapshot in the application, or start from scratch with the `raw_data.json`.
 
-<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/6200e881452a41a0d24789f3_Group%20132.svg">
+
 
 ## Labels
 The goal is to create a chatbot that is capable of understanding multiple intents from questions asked by users about financial topics, e.g. frozen bank accounts. The labels of our main labeling task `intent` are:
