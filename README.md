@@ -1,14 +1,17 @@
+[![refinery repository](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)](https://github.com/code-kern-ai/refinery-sample-projects)
+
 # 🧮 Finetuning similarity search
 In this use case, we show you how to fine-tune embeddings on your own data for better similarity search using [Kern *refinery*](https://github.com/code-kern-ai/refinery) and [Quaterion](https://github.com/qdrant/quaterion).
 
-<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41cb827b6527908b65a8_industry_saas.svg">
+<img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41cb827b6527908b65a8_industry_saas.svg" width="300px">
 
-# Data
+## Data
 We use a publicly available dataset for demonstration purposes, namely the [AG News Classification Dataset from Kaggle](https://www.kaggle.com/datasets/amananandrai/ag-news-classification-dataset). The data is already labeled, which is not a problem for this sample project as it can help us assess the quality of our labeling (or we could find labeling mistakes in the original data 😉). We also limit ourselves to 20.000 records for faster processing.
-# Project settings
+
+## Project settings
 We have English text, so we use the English tokenizer `en_core_web_sm`. For the generation of embeddings we just use `distilbert-base-uncased` from [🤗 Hugging Face](https://huggingface.co/distilbert-base-uncased).
 
-# Labels
+## Labels
 The goal  is to classify the shortened news article into one of four categories:
 - World
 - Sports
@@ -18,8 +21,8 @@ The goal  is to classify the shortened news article into one of four categories:
 These categories therefore represent our four possible labels for the classification labeling task `Topic`.
 The additional two information extraction labeling tasks `Title Topic` and `Description Topic` help us in building an understanding of what contributed to our labeling decision. They also automatically build up the lookup lists that we will use for our heuristics later.
 
-# `Topic` heuristics
-The most trivial heuristics we can use are keyword lookups, one for each label. One could also merge them into a single Labeling Function, but that would make it harder to validate and debug.
+## `Topic` heuristics
+The most trivial heuristics we can use are keyword lookups, one for each label. One could also merge them into a single labeling function, but that would make it harder to validate and debug.
 
 Take a look at the example of `sport_lookup`:
 ```python
@@ -28,10 +31,10 @@ from knowledge import sports # this is how to use lookup lists inside the kern r
 
 def sport_lookup(record):
     for term in sports:
-            if(term.lower() in record["Title"].text.lower()):
-                return "Sports"
-            elif(term.lower() in record["Description"].text.lower()):
-                return "Sports"
+        if(term.lower() in record["Title"].text.lower()):
+            return "Sports"
+        elif(term.lower() in record["Description"].text.lower()):
+            return "Sports"
 ```
 
 We also registered an Active Learner called `DistilbertClassifier`:
@@ -65,7 +68,7 @@ We end up with the following heuristics:
     <img src="figures/heuristics.PNG">
 </p>
 
-# Labeling workflow and weak supervision
+## Labeling workflow and weak supervision
 The labeling workflow is rarely linear and more often an iterative process of labeling, writing heuristics, validating heuristics, re-labeling, applying weak supervision, validating the results, and much more.
 
 In this example, we first labeled around 250 records to get a feeling for the data and build up the lookup lists. After that, we added the heuristics, namely the lookup functions and the active learner. We then validated the heuristics in the data browser by inspecting conflicts and removing confusing keywords from the respective lookup lists. Once we were relatively satisfied with the results, we ran the weak supervision and looked at the confusion matrix.
@@ -76,9 +79,10 @@ In this example, we first labeled around 250 records to get a feeling for the da
 
 For this end-to-end use case, we are satisfied with the accuracy and can advance to the next step towards our fine-tuned similarity search.
 
-# Data Export and Quaterion format
-## Export
-We could use the in-app functionality of exporting our data, but we wouldn't be developers if we weren't committed to eliminating every second of manual labor. That is why we will export it using the [refinery SDK](https://github.com/code-kern-ai/refinery-python), which can be easily installed with pip.
+## Data Export and Quaterion format
+### Export
+We could use the in-app functionality of exporting our data, but we wouldn't be developers if we weren't committed to eliminating every second of manual labor 😉. That is why we will export it using the [refinery SDK](https://github.com/code-kern-ai/refinery-python), which can be easily installed with pip.
+
 ```
 $ pip install python-refinery
 ```
@@ -98,7 +102,7 @@ client = Client(user_name, password, project_id, uri="https://app.kern.ai/")
 df = client.get_record_export(tokenize=False)
 ```
 
-Before we continue with Quaterion, we must have to select the data that is labeled to our specifications, namely either have a manual label or weakly supervised label with a confidence above 0.7:
+Before we continue with Quaterion, we must have to select the data that is labeled to our specifications, namely either have a manual label or weakly supervised label with a confidence above `0.7` (you can use any other threshold, of course. See below why we decided to go for `0.7`):
 ```python 
 filtered_df = df[
     (df["__Topic__WEAK_SUPERVISION__confidence"].astype(float) > 0.7) # threshold check
@@ -157,8 +161,8 @@ val_dataloader = GroupSimilarityDataLoader(JsonDataset('./labeled_data_val.json'
 
 The data is now prepared to be processed in a Quaterion fine-tuning pipeline!
 
-# Notes
-## Weak supervision threshold
+## Notes
+### Weak supervision threshold
 The exported data contains not only the label that was assigned by weak supervision but also the confidence attached to it. Selecting the right threshold (when to take the weak supervision label as the real label) is always difficult and a trade-off between accuracy and amount of labeled data.
 
 After inspecting several threshold levels, we settled with 0.7:
