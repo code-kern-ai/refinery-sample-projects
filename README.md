@@ -4,11 +4,11 @@
 
 **This use case is accompanied by a [YouTube video](https://www.youtube.com/watch?v=0XZLQlYSQEQ&ab_channel=KernAI).**
 
-In this use-case we show you how you can build your own sentiment analysis classifier for stock news - completely from stratch! You'll scrape some interesting stock news from the internet to create your own dataset and then use Kern Refinery to easily and quickly label the data. 
+In this use-case we show you how you can build your own sentiment analysis classifier for stock news - completely from stratch! You'll scrape some interesting stock news from the internet to create your own dataset and then use Kern refinery to easily and quickly label the data. 
 
-To create the embeddings from our text data, we are going to use the `zhayunduo/roberta-base-stocktwits-finetuned` model from [Huggingface](huggingface.co).
+<img src="screenshot import snapshot.png" width=500px>
 
-Watch the corresponding tutorial [here on YouTube](https://www.youtube.com/watch?v=0XZLQlYSQEQ)!
+*You can import the `snapshot.json.zip` on the start screen of the application (`http://localhost:4455`)*
 
 <img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41d833c650bbe9c7122f_sentiment-analysis.svg" width="300px">
 
