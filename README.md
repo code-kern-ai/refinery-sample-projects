@@ -1,4 +1,4 @@
-![](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)
+[![refinery repository](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)](https://github.com/code-kern-ai/refinery-sample-projects)
 
 <img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/6200e881452a41a0d24789f3_Group%20132.svg" width="300px">
 
