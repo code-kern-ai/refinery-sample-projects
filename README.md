@@ -88,7 +88,7 @@ For this end-to-end use case, we are satisfied with the accuracy and can advance
 We could use the in-app functionality of exporting our data, but we wouldn't be developers if we weren't committed to eliminating every second of manual labor 😉. That is why we will export it using the [refinery SDK](https://github.com/code-kern-ai/refinery-python), which can be easily installed with pip.
 
 ```
-$ pip install python-refinery
+$ pip install python-refinery-sdk
 ```
 
 After that, we can simply fetch our data using the following code:
