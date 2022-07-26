@@ -3,7 +3,7 @@
 # 🧮 Finetuning similarity search
 In this use case, we show you how to fine-tune embeddings on your own data for better similarity search using [Kern *refinery*](https://github.com/code-kern-ai/refinery) and [Quaterion](https://github.com/qdrant/quaterion).
 
-<img src="screenshot import snapshot.png" width=500px>
+<img src="figures/screenshot import snapshot.png" width=500px>
 
 *You can import the `snapshot.json.zip` on the start screen of the application (`http://localhost:4455`)*
 
