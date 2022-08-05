@@ -3,6 +3,7 @@ Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+secrets.json
 
 # C extensions
 *.so

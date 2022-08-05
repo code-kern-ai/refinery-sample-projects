@@ -5,7 +5,7 @@ In this use case, we show you how to fine-tune embeddings on your own data for b
 
 <img src="figures/screenshot import snapshot.png" width=500px>
 
-*You can import the `snapshot.json.zip` on the start screen of the application (`http://localhost:4455`)*
+*You can import the `AG_news_project_snapshot.json.zip` on the start screen of the application (`http://localhost:4455`)*
 
 <img align="right" src="https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62cb41cb827b6527908b65a8_industry_saas.svg" width="300px">
 
@@ -106,13 +106,14 @@ client = Client(user_name, password, project_id, uri="https://app.kern.ai/")
 df = client.get_record_export(tokenize=False)
 ```
 
-Before we continue with Quaterion, we must have to select the data that is labeled to our specifications, namely either have a manual label or weakly supervised label with a confidence above `0.7` (you can use any other threshold, of course. See below why we decided to go for `0.7`):
+Before we continue with Quaterion, we must have to select the data that is labeled to our specifications, namely either have a manual label or weakly supervised label with a confidence above `0.7` (you can use any other threshold, of course. See at the bottom of this README why we decided to go for `0.7`):
 ```python 
 filtered_df = df[
-    (df["__Topic__WEAK_SUPERVISION__confidence"].astype(float) > 0.7) # threshold check
-    & ~(df["__Topic__WEAK_SUPERVISION"].isnull() & df["__Topic__MANUAL"].isnull()) # either manually or weakly labeled
+    (df["__Topic__WEAK_SUPERVISION__confidence"].astype(float) > 0.7) # either threshold WS label
+    | ~(df["__Topic__MANUAL"].isnull()) # or manual label
     ].reset_index()
 ```
+This filter leaves us with 10.854 records for further processing.
 
 Now, we add a new column that is either the manual label or, if there is none, the weakly supervised label:
 ```python 
@@ -127,8 +128,12 @@ filtered_df["label"] = filtered_df.apply(combine_labels, axis=1)
 
 To finish the pre-processing, we just split this into a train and validation set and save them as a json for Quaterion later.
 ```python
-filtered_df_val = filtered_df[["Title", "Description", "label"]].iloc[-2500:]
-filtered_df_train = filtered_df[["Title", "Description", "label"]].iloc[:-2500]
+from sklearn.model_selection import train_test_split
+
+train_idx, val_idx = train_test_split(filtered_df.index, test_size=0.25, random_state=42)
+
+filtered_df_val = filtered_df[["Title", "Description", "label"]].loc[val_idx]
+filtered_df_train = filtered_df[["Title", "Description", "label"]].loc[train_idx]
 
 filtered_df_val[["Title", "Description", "label"]].to_json("labeled_data_val.json", orient="records")
 filtered_df_train[["Title", "Description", "label"]].to_json("labeled_data_train.json", orient="records")
@@ -177,4 +182,4 @@ After inspecting several threshold levels, we settled with 0.7:
     <img src="figures/ws_threshold.png">
 </p>
 
-If you're wondering how these plots were generated, head over to the [pretty-print-confusion-matrix GitHub repo](https://github.com/wcipriano/pretty-print-confusion-matrix)!
+If you're wondering how these plots were generated, head over to [pretty-print-confusion-matrix](https://github.com/wcipriano/pretty-print-confusion-matrix)!
