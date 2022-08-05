@@ -5,7 +5,7 @@ from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 
 def predict_sentiment(input_headlines):
-    # Get request output from the fastapi
+    # Get request output from docker container via fastapi
     response = requests.post(
         "http://localhost:7531/predict", json={"text": input_headlines}
     )
