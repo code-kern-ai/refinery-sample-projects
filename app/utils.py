@@ -1,39 +1,25 @@
 import numpy as np 
 import pandas as pd
-import pickle
+import requests
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 
-import torch 
-import torch as nn
-
-from embedders.classification.contextual import TransformerSentenceEmbedder
-
-sent_transformer = TransformerSentenceEmbedder('zhayunduo/roberta-base-stocktwits-finetuned')
-model = torch.load('stock_model.pt', map_location=torch.device('cpu'))
-with open('encoder.pkl', 'rb') as pkl_file:
-    encoder = pickle.load(pkl_file)
-
 def predict_sentiment(input_headlines):
-    article_embedding = sent_transformer.transform(input_headlines)
-    article_embedding = np.array(article_embedding)
-    torch_embedding = torch.FloatTensor(article_embedding)
+    # Get request output from the fastapi
+    response = requests.post(
+        "http://localhost:7531/predict", json={"text": input_headlines}
+    )
 
-    scores = []
-    sentiment_list = []
-    for item in torch_embedding:
-        prediction = model(item)
-        prediction_numpy = prediction.cpu().detach().numpy().astype(int)
+    # If response is ok, split response by labels and by confidence
+    if response.status_code == 200:
+        predictions = response.json()
+        labels = [i['label'] for i in predictions]
+        confidence = [i['confidence'] for i in predictions]
 
-        sentiment_number = [np.argmax(prediction_numpy)]
-        sentiment = encoder.inverse_transform(sentiment_number)
-        sentiment_list.append(sentiment)
-        scores.append(sentiment_number[0])
-
-    sent_list = [list(item) for item in sentiment_list]
-    sent_flatten = [x for xs in sent_list for x in xs]
-
-    return sent_flatten, scores
+        return labels, confidence
+    
+    else:
+        print(f"Something went wrong! Response code {response.status_code}")
 
 # Function to get news from finwiz
 def get_news(ticker):
@@ -75,11 +61,3 @@ def get_news(ticker):
             break
     
     return news_list
-
-
-def get_score(scores):
-    max_score = len(scores) * 2
-    acutal_score = sum(scores)
-    sentiment_score = round((acutal_score / max_score) * 100, 2)
-
-    return sentiment_score
