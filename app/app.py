@@ -1,10 +1,7 @@
 import numpy as np
 import pandas as pd
-import requests
-
-from utils import predict_sentiment, get_news
-
 import streamlit as st
+from utils import predict_sentiment, get_news
 
 ticker_name = st.text_input('Select ticker name, e.g MSFT, AAPL, etc.')
 
