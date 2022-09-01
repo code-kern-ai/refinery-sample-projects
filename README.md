@@ -5,6 +5,8 @@
 # 💬 Conversational AI
 In this use case, we show you how to create training data for a [Rasa chatbot](https://github.com/RasaHQ/rasa) using [Kern *refinery*](https://github.com/code-kern-ai/refinery). You can either import the `snapshot_data.json.zip` as a snapshot in the application, or start from scratch with the `raw_data.json`.
 
+We also made a special video for this sample project, which you can see [here on YouTube](https://www.youtube.com/watch?v=h6xP4Kz5HJg)!
+
 <img src="screenshot import snapshot.png" width=500px>
 
 *You can import the `snapshot.json.zip` on the start screen of the application (`http://localhost:4455`)*
@@ -145,6 +147,142 @@ nlu:
     - checking
     - credit card account
 ```
+
+## Using .yml files to create a chatbot with RASA NLU
+
+Besides the nlu.yml file, rasa also need some more files, so that we acutally get a usable chatbot. For this sample project, you need the following files:
+
+- stories.yml
+- rules.yml
+- domain.yml
+- endpoints.yml
+
+This might sound a lot, but don't worry, it's not too complicated! 
+
+First up, let's take a look at a stories. With stories, you manage the structure of the dialogues you want the conversations to have. Stories are really powerful, because they are not static. The underlying rasa rechnology is smart enough to switch between stories when needed, which allows us to create chatbots that are able to have natural and organic conversations. 
+
+Stories have multiple steps and are started by indentifiny an intent by the user. The inents are learned by the chatbot by the nlu.yml file. An intent is usually followed by an action. If you want your chatbot to send out a response, the actions start with `utter_`. The responses are defined in the `domain.yml` file, but more on that later. Here is simple story to greet a user:
+```yml
+stories: 
+- story: greeting the user
+  steps:
+  - intent: greeting
+  - action: utter_greeting
+```
+
+Using this structure, we can now built a more complex story:
+```yml
+- story:  card_got_lost + affirm
+  steps: 
+  - intent: card lost
+  - action: utter_ican_deactivate
+  - intent: affirm
+  - action: card_deactivation_form
+  - active_loop: card_deactivation_form
+  - slot_was_set:
+    - requested_slot: birthday
+  - slot_was_set:
+    - requested_slot: card_number
+  - slot_was_set:
+    - requested_slot: null
+  - active_loop: null
+  - action: action_say_card_num
+  - action: utter_anything_else
+  - intent: deny
+```
+
+In the story you see above, we want to help to deactivate a lost or stolen card for the user. Once we identify the intent that a card was lost/stolen, we offer our help to the user. The user has to affirm this before we continue, otherwise the chatbot will switch to another story where this process is stopped (see the `stories.yml` file for this). 
+
+To deactivate the card, we need to get some information from the customer, namely a birthdate and the card number. To do this, we are using rules. Rules are similar to stories, because they predefine steps that are taken in a conversation. Their structure is also similar in that you define steps to set them up. Rules are less flexible than stories, which is neat when you know that you want a conversation to take a certain path, like in this case to get information from the user. However, you shouldn't overuse rules.
+
+For the rules, we are going to set up a form. A form is like a loop, that only closes once specific information is gathered. To avoid that the form is running forever, we need to actively open and close it. To open is, we write:
+
+```yml
+rules:
+- rule: Activate form
+  steps:
+  - intent: affirm
+  - action: card_deactivation_form
+  - active_loop: card_deactivation_form
+```
+
+And to close it, we write another rule:
+```yml
+- rule: Submit form
+  condition:
+  # Condition that form is active.
+  - active_loop: card_deactivation_form
+  steps:
+  # Form is deactivated
+  - action: card_deactivation_form
+  - active_loop: null
+  - slot_was_set:
+    - requested_slot: null
+  - action: action_say_card_num
+  - action: utter_anything_else
+```
+Notice that we have to set the `active_loop` to the corresponding action first and then also set it to `null` again. 
+
+## Using custom actions
+
+A great thing about RASA is that we can also use custom actions with it to use them in our chatbot. We can code custom action in Python. Down below, we've set up a custom action to recieve some previously stored information and print them out in a confirmation message:
+
+```python
+class ActionSayCardNum(Action):
+
+    def name(self) -> Text:
+        return "action_say_card_num"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+        card_num = tracker.get_slot("card_number")
+        if card_num is not 'None':
+            dispatcher.utter_message(text=f"I have deactivated the card with the number: {card_num}!")
+        else:
+            dispatcher.utter_message(text="I don't know your card number.")
+
+        return []
+```
+
+## Endpoints and config 
+
+Before we can finally use the chatbot, we also need to create a file called `endpoints.yml` and add the following code to it:
+
+```yml
+action_endpoint:
+  url: "hhtps://localhost:5055/webhook"
+```
+
+Because our chatbot is should be able to extract the birthday from the user in different formats, we are going to use a pre-trained EntityExtractor called Duckling. This is really easy to set up. 
+All you need to do is go to the `config.yml` file and paste the following code:
+```yml
+pipeline:
+  - name: "DucklingEntityExtractor"
+    # url of the running duckling server
+    url: "http://localhost:8000"
+    # dimensions to extract
+    dimensions: ["time", "number"]
+    # allows you to configure the locale, by default the language is
+    # used
+    locale: "en_EN"
+    # if not set the default timezone of Duckling is going to be used
+    # needed to calculate dates from relative expressions like "tomorrow"
+    timezone: "Europe/Berlin"
+    # Timeout for receiving response from http url of the running duckling server
+    # if not set the default timeout of duckling http url is set to 3 seconds.
+    timeout : 3
+``` 
+
+After that, run:
+```
+docker run 8000:8000 rasa/duckling
+```
+
+## Starting the chatbot
+
+Now we are ready to start up the chatbot. In a new terminal window, run `rasa run actions`. Back in the previous terminal window, you can use the chatbot by typing `rasa shell` or `rasa interactive` if you are curious to know that is happening under the hood!
 
 And that's it! You can now easily build chatbot data (from simple text messages up to complex messages) via Kern *refinery*, and immediately export it to the desired Rasa format with only few lines of code.
 
