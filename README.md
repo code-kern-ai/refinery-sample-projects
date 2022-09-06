@@ -1,7 +1,7 @@
 [![refinery repository](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)](https://github.com/code-kern-ai/refinery-sample-projects)
 
-# 🧮 Finetuning similarity search
-In this use case, we show you how to fine-tune embeddings on your own data for better similarity search using [Kern *refinery*](https://github.com/code-kern-ai/refinery) and [Quaterion](https://github.com/qdrant/quaterion).
+# 🧮 Fine-tuning embeddings for better similarity search
+In this use case, we show you how to fine-tune embeddings on your own data for better similarity search using [Kern *refinery*](https://github.com/code-kern-ai/refinery) and [Quaterion](https://github.com/qdrant/quaterion). This repository is accompanied by [a blog post article](www.kern.ai/post/fine-tune-your-embeddings-for-better-similarity-search) that gives additional insights into this use case.
 
 <img src="figures/screenshot import snapshot.png" width=500px>
 
@@ -84,7 +84,7 @@ In this example, we first labeled around 250 records to get a feeling for the da
 For this end-to-end use case, we are satisfied with the accuracy and can advance to the next step towards our fine-tuned similarity search.
 
 ## Data Export and Quaterion format
-### Export
+### Export (_see data_preprocessing.ipynb for full code_)
 We could use the in-app functionality of exporting our data, but we wouldn't be developers if we weren't committed to eliminating every second of manual labor 😉. That is why we will export it using the [refinery SDK](https://github.com/code-kern-ai/refinery-python), which can be easily installed with pip.
 
 ```
@@ -111,7 +111,7 @@ Before we continue with Quaterion, we must have to select the data that is label
 filtered_df = df[
     (df["__Topic__WEAK_SUPERVISION__confidence"].astype(float) > 0.7) # either threshold WS label
     | ~(df["__Topic__MANUAL"].isnull()) # or manual label
-    ].reset_index()
+    ]
 ```
 This filter leaves us with 10.854 records for further processing.
 
@@ -138,7 +138,7 @@ filtered_df_train = filtered_df[["Title", "Description", "label"]].loc[train_idx
 filtered_df_val[["Title", "Description", "label"]].to_json("labeled_data_val.json", orient="records")
 filtered_df_train[["Title", "Description", "label"]].to_json("labeled_data_train.json", orient="records")
 ```
-## Quaterion
+### Quaterion (_see quaterion.ipynb_)
 ```
 $ pip install quaterion
 ```
@@ -154,12 +154,19 @@ from quaterion.dataset.similarity_data_loader import (
 class JsonDataset(Dataset):
     def __init__(self, path: str):
         super().__init__()
+        self.translation_dict = {
+            "World" : 1,
+            "Sports" : 2,
+            "Business" : 3,
+            "Sci/Tech" : 4
+        }
         with open(path, "r") as f:
-            self.data = [json.loads(line) for line in f.readlines()]
+            self.data = json.loads(f.read())
+            # self.data = [json.loads(line) for line in f.readlines()]
 
     def __getitem__(self, index: int) -> SimilarityGroupSample:
         item = self.data[index]
-        return SimilarityGroupSample(obj=item, group=hash(item["label"]))
+        return SimilarityGroupSample(obj=item, group=self.translation_dict[item["label"]])
 
     def __len__(self) -> int:
         return len(self.data)
@@ -172,6 +179,21 @@ The data is now prepared to be processed in a Quaterion fine-tuning pipeline!
 
 If you like what we're working on, please leave a ⭐ for [refinery](https://github.com/code-kern-ai/refinery)!
 
+## Training
+After defining our encoder and model, we initialize a new model and train it in the basic Quaterion pipeline. The whole code for this can be found in the _quaterion.ipynb_ notebook.
+```python
+model = Model(lr=0.001)
+
+Quaterion.fit(
+    trainable_model=model,
+    trainer=None, # Use default trainer
+    train_dataloader=train_dataloader,
+    val_dataloader=val_dataloader
+)
+``` 
+
+## Evaluation
+In the same notebook (_quaterion.ipynb_) you can find the code used for evaluating the results. For a detailed description of the evaluation please have a look at the [blog article](www.kern.ai/post/fine-tune-your-embeddings-for-better-similarity-search) accompanying this repository.
 
 ## Notes
 ### Weak supervision threshold
