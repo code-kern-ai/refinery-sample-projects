@@ -1,7 +1,7 @@
 [![refinery repository](https://uploads-ssl.webflow.com/61e47fafb12bd56b40022a49/62d1586ddec8452bb40c3256_sample-projects.svg)](https://github.com/code-kern-ai/refinery-sample-projects)
 
 # 🧮 Fine-tuning embeddings for better similarity search
-In this use case, we show you how to fine-tune embeddings on your own data for better similarity search using [Kern *refinery*](https://github.com/code-kern-ai/refinery) and [Quaterion](https://github.com/qdrant/quaterion). This repository is accompanied by [a blog post article](https://www.kern.ai/post/fine-tune-your-embeddings-for-better-similarity-search) that gives additional insights into this use case.
+In this use case, we show you how to fine-tune embeddings on your own data for better similarity search using [Kern *refinery*](https://github.com/code-kern-ai/refinery) and [Quaterion](https://github.com/qdrant/quaterion). This repository is accompanied by [a blog post article](https://blog.kern.ai/how-to-finetuning-embeddings) that gives additional insights into this use case.
 
 <img src="figures/screenshot import snapshot.png" width=500px>
 
